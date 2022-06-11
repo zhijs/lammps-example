@@ -1,0 +1,48 @@
+# Initialization
+# System definition
+# Simulation settings
+# Run
+
+# -------------	Initialization
+
+units        lj # 使用的单位系统，lj 表示所有的量都是无单位的
+dimension    2  # 纬度是 2D
+atom_style   atomic # 定义原子 style 是一个带有质量的点
+pair_style   lj/cut 2.5 # 原子间相互作用函数定义为 Lennard-Jones-并且阶段距离是 2.5（暂时不理解）
+boundary     p p p # 定义边界， p 表示表示周期性边界条件，当粒子从一侧飞出，会从相对应的另一侧再次进入box
+
+# ------------- System definition
+# 创建了一个空间区域，id 为 myreg 是一个 block(长立方体), x 的值从 -30到 30，y 的值从 -30 到 30， z 的值从 -0.5到5
+region		myreg block -30 30 -30 30 -0.5 0.5
+create_box	2 myreg # 在 id 为  myreg 创建一个 box, 这个 box 用来放 原子类型是 2 的原子
+create_atoms	1 random 1500 341341 myreg # 在 myreg 随机创建 1500 个 1 类型的原子，341341 是随机生成的种子
+create_atoms	2 random 100 127569 myreg
+
+
+
+# ------------- Simulation settings
+mass		1 1 # 类型 1 的原子质量为 1
+mass		2 1 # 类型 2 的原子质量为 2
+pair_coeff	1 1 1.0 1.0 # 类型 1 原子和类型 1 原子之间的势能函数 兰纳-琼斯势 的两个参数变量的值都为 1.0
+pair_coeff	2 2 0.5 3.0 # 类型 2 原子和类型 2 原子之间的势能函数 兰纳-琼斯势 的两个参数变量的值的分别为 0.5 和 3.0
+neigh_modify every 1 delay 5 check yes
+dump	mydmp all atom 1000 dump.lammpstrj
+
+# ------------- Run
+thermo		10 # 每 10 步打印一次热力学参数（温度，能量等）
+
+### 最小化优化 第一参数表示两个迭代最小的能量变化，第二个参数表示两个原子间最大的作用力，第三个参数表示最大的迭代次数是 1000， 
+minimize	1.0e-4 1.0e-6 1000 10000
+
+# 定义一个对所有类型原子起作用的 nve(n 原子数量，v 速度，e 能量) 集合，id 为 mynve
+fix         mynve all nve
+
+# 对所有类型原子应用 langevin，其中参数为为 1.0， 1.0， 0.1 和一个随机种子数字
+fix         mylgv all langevin 1.0 1.0 0.1 1530917
+
+# 对所有类型原子，让其保持 2D 的维度
+fix		     myefn all enforce2d
+
+timestep	 0.005  # 模拟时间步长
+thermo		 1000  #一千次打印一次信息
+run		     10000 # 一共运行 10000 次
