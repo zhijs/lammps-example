@@ -16,7 +16,7 @@ pair_modify mix arithmetic tail yes
 kspace_style ewald 0.0001
 # 键相互作用的类型
 bond_style harmonic
-#原子键间角相互作用的类型
+#原子键角相互作用的类型
 angle_style harmonic
 
 # box, start molecules on simple cubic lattice
