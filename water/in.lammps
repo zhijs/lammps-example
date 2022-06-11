@@ -1,19 +1,22 @@
 # global model settings
-
+# 定义单位
 units real
 
+# 原子类型
 atom_style full
 
+# 周期边界
 boundary p p p
 
+# 每对原子截断半径内的相互作用的势函数类型
 pair_style lj/cut/coul/long 14
 
 pair_modify mix arithmetic tail yes
 
 kspace_style ewald 0.0001
-
+# 键相互作用的类型
 bond_style harmonic
-
+#原子键间角相互作用的类型
 angle_style harmonic
 
 # box, start molecules on simple cubic lattice
@@ -24,40 +27,52 @@ region box block 0 10 0 10 0 10
 
 create_box 2 box bond/types 1 angle/types 1 extra/bond/per/atom 2 extra/angle/per/atom 1 extra/special/per/atom 2
 
+# 读取水分子模板
 molecule h2omol h2o.txt
 
 create_atoms 0 box mol h2omol 456 units box
 
 # rigid SPC/E water model
 
+# 指定了1 号原子(氧原子)和其1号原子间势函数的具体参数
 pair_coeff 1 1 0.15535 3.166
 
+# 指定了其他原子（氢）与2号原子间势函数的具体参数
 pair_coeff * 2 0.0000 0.0000
 
+# 1 号键势能参数
 bond_coeff 1 1000 1.0
 
+# 1 号角度势能参数
 angle_coeff 1 100 109.47
 
 # masses
-
+# 原子质量
 mass 1 15.9994
 
 mass 2 1.0
 
 # MD settings
 
+# 每 100 步输出一次数据
 thermo 100
 
+# 输出的内容 temp: 温度，pe: 总势能
 thermo_style custom step temp pe etotal press vol pxx pyy pzz enthalpy lx ly lz
 
+# 1 2 类型原子归为 h2o 类型
 group h2o type 1 2
 
+# 邻居列表的 skin 为 2
 neighbor 2.0 bin
 
+# 检测邻居列表的变更
 neigh_modify every 1 delay 1 check yes
 
+# 通过给所有原子初始化 300K 的温度来初始化速度
 velocity all create 300.0 54654
 
+# 
 timestep 1.0
 
 minimize 1e-6 1e-8 10000 10000
