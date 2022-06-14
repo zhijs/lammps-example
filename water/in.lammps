@@ -83,8 +83,10 @@ dump dump all custom 1000 dump.lammpstrj id type x y z
 
 # rigid constraints with thermostat
 
+# 添加刚性限制
 fix wshake h2o shake 0.0001 50 0 b 1 a 1 mol h2omol
 
+# npt 等压原子数不变恒温系统
 fix MD h2o npt temp 300.0 300.0 100 iso 1.0 1.0 1000.0
 
 run 10000
