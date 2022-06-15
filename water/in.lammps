@@ -58,7 +58,7 @@ mass 2 1.0
 thermo 100
 
 # 输出的内容 temp: 温度，pe: 总势能
-thermo_style custom step temp pe etotal press vol pxx pyy pzz enthalpy lx ly lz
+thermo_style custom step pe
 
 # 1 2 类型原子归为 h2o 类型
 group h2o type 1 2
@@ -89,4 +89,4 @@ fix wshake h2o shake 0.0001 50 0 b 1 a 1 mol h2omol
 # npt 等压原子数不变恒温系统
 fix MD h2o npt temp 300.0 300.0 100 iso 1.0 1.0 1000.0
 
-run 10000
+run 15000
